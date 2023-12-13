@@ -10,6 +10,6 @@ app.include_router(system.router, prefix="/system")
 def status():
     return {"ok": True, "version": __version__}
 
-# @app.post("/hello")
-# async def hello_message(dto: ISayHelloDto):
-#     return {"message": f"Hello {dto.message}"}
+@app.post("/hello")
+async def hello_message(dto: ISayHelloDto):
+    return {"message": f"Hello {dto.message}"}
