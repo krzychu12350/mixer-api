@@ -64,6 +64,9 @@ async def mix_files():
 async def hello():
     return {'res': 'pong', 'version': __version__, "time": time()}
 
+@app.get('/')
+async def helloWorld():
+    return {'res': 'HelloWorld'}
 
 if __name__ == "__main__":
   uvicorn.run("server.api:app", host="0.0.0.0", port=8000, reload=True)
