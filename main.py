@@ -5,6 +5,7 @@ from starlette.responses import FileResponse
 from time import time
 from fastapi import FastAPI, __version__
 from mixer import Mixer
+import uvicorn
 
 origins = ["*"]
 app = FastAPI()
@@ -62,3 +63,7 @@ async def mix_files():
 @app.get('/ping')
 async def hello():
     return {'res': 'pong', 'version': __version__, "time": time()}
+
+
+if __name__ == "__main__":
+  uvicorn.run("server.api:app", host="0.0.0.0", port=8000, reload=True)
