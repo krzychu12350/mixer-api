@@ -1,13 +1,8 @@
 from time import time
-
 import uvicorn
 from fastapi import FastAPI, __version__
-from fastapi import UploadFile
-from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import FileResponse
 
-from mixer import Mixer
 
 origins = ["*"]
 app = FastAPI()
@@ -20,23 +15,23 @@ app.add_middleware(
 )
 
 
-def validateFiles(files):
-    for file in files:
-        # # Get the file size (in bytes)
-        # file.file.seek(0, 2)
-        # file_size = file.file.tell()
-        #
-        # # move the cursor back to the beginning
-        # await file.seek(0)
-        #
-        # if file_size > 2 * 1024 * 1024:
-        #     # more than 2 MB
-        #     raise HTTPException(status_code=400, detail="File too large")
-        #
-        # check the content type (MIME type)
-        content_type = file.content_type
-        if content_type not in ["audio/mp3", "audio/wav", "audio/x-wav"]:
-            raise HTTPException(status_code=400, detail="Invalid file type. Must be audio/mp3")
+# def validateFiles(files):
+#     for file in files:
+#         # # Get the file size (in bytes)
+#         # file.file.seek(0, 2)
+#         # file_size = file.file.tell()
+#         #
+#         # # move the cursor back to the beginning
+#         # await file.seek(0)
+#         #
+#         # if file_size > 2 * 1024 * 1024:
+#         #     # more than 2 MB
+#         #     raise HTTPException(status_code=400, detail="File too large")
+#         #
+#         # check the content type (MIME type)
+#         content_type = file.content_type
+#         if content_type not in ["audio/mp3", "audio/wav", "audio/x-wav"]:
+#             raise HTTPException(status_code=400, detail="Invalid file type. Must be audio/mp3")
 
 
 # @app.get("/mp3")
@@ -47,13 +42,13 @@ def validateFiles(files):
 #     return FileResponse(filePath, media_type='audio/mp3')
 
 
-@app.post("/multi")
-async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
-    mixer = Mixer()
-    filePath = mixer.mixFileSounds(files, instrumental)
-
-    return FileResponse(filePath, media_type='audio/wav')
-    # return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
+# @app.post("/multi")
+# async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
+#     mixer = Mixer()
+#     filePath = mixer.mixFileSounds(files, instrumental)
+#
+#     return FileResponse(filePath, media_type='audio/wav')
+#     # return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
 
 
 # @app.get("/mix")
