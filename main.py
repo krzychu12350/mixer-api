@@ -186,11 +186,11 @@ app.add_middleware(
 
 
 @app.get("/multi")
-async def check_multi_files(instrumental):
+async def check_multi_files(files, instrumental):
     # filePath = mixFileSounds(files, instrumental)
     #
     # return FileResponse(filePath, media_type='audio/wav')
-    return {"instrumental": instrumental.filename}
+    return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
 
 
 # @app.get("/mix")
