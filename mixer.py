@@ -106,10 +106,10 @@ class Mixer:
             mix = current_instrumental.overlay(file_to_mix, position=mix_position)
 
             duration_millis = round(file_to_mix.duration_seconds  * 1000)
-            print(str(duration_millis))
+            #print(str(duration_millis))
 
-            #print("Mix position: " + str(mix_position))
-            print("Mix position: " + str(self.convertMilisecondsToMinuteSecondFormat(mix_position)))
+            print("Sample duration: " + str(self.convertMilisecondsToMinuteSecondFormat(duration_millis)))
+            print("Current sample position: " + str(self.convertMilisecondsToMinuteSecondFormat(mix_position)))
 
             print("Counter: " + str(counter))
             file_path = "./output-mixes/mix_" + str(counter) + ".wav"

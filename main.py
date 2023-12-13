@@ -2,7 +2,8 @@ from fastapi import FastAPI, UploadFile
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
-
+from time import time
+from fastapi import FastAPI, __version__
 from mixer import Mixer
 
 origins = ["*"]
@@ -56,3 +57,8 @@ async def mix_files():
     mixer = Mixer()
     filePath = mixer.mixFileSounds()
     return FileResponse(filePath, media_type='audio/mp3')
+
+
+@app.get('/ping')
+async def hello():
+    return {'res': 'pong', 'version': __version__, "time": time()}
