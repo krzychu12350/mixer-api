@@ -1,11 +1,13 @@
-from fastapi import FastAPI, UploadFile
+from time import time
+
+import uvicorn
+from fastapi import FastAPI, __version__
+from fastapi import UploadFile
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
-from time import time
-from fastapi import FastAPI, __version__
+
 from mixer import Mixer
-import uvicorn
 
 origins = ["*"]
 app = FastAPI()
@@ -37,12 +39,12 @@ def validateFiles(files):
             raise HTTPException(status_code=400, detail="Invalid file type. Must be audio/mp3")
 
 
-@app.get("/mp3")
-async def root():
-    mixer = Mixer()
-    filePath = mixer.mergeFiles()
-    # return {"message": "Welcome test", "fileName": filePath}
-    return FileResponse(filePath, media_type='audio/mp3')
+# @app.get("/mp3")
+# async def root():
+#     mixer = Mixer()
+#     filePath = mixer.mergeFiles()
+#     # return {"message": "Welcome test", "fileName": filePath}
+#     return FileResponse(filePath, media_type='audio/mp3')
 
 
 @app.post("/multi")
@@ -51,24 +53,25 @@ async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
     filePath = mixer.mixFileSounds(files, instrumental)
 
     return FileResponse(filePath, media_type='audio/wav')
-    #return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
+    # return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
 
-@app.get("/mix")
-async def mix_files():
-    mixer = Mixer()
-    filePath = mixer.mixFileSounds()
-    return FileResponse(filePath, media_type='audio/mp3')
+
+# @app.get("/mix")
+# async def mix_files():
+#     mixer = Mixer()
+#     filePath = mixer.mixFileSounds()
+#     return FileResponse(filePath, media_type='audio/mp3')
 
 
 @app.get('/ping')
 async def hello():
     return {'res': 'pong', 'version': __version__, "time": time()}
 
+
 @app.get('/')
 async def helloWorld():
     return {'res': 'HelloWorld'}
 
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-
