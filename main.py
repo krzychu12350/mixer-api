@@ -185,7 +185,7 @@ app.add_middleware(
 #     return FileResponse(filePath, media_type='audio/mp3')
 
 
-@router.post("/multi")
+@app.post("/multi")
 async def mix_files(instrumental: UploadFile):
     # filePath = mixFileSounds(files, instrumental)
     #
