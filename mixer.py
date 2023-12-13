@@ -38,6 +38,16 @@ class Mixer:
         return file_path
         # play(three_concat)
 
+    def convertMilisecondsToMinuteSecondFormat(self, millis):
+        millis = int(millis)
+        seconds = (millis / 1000) % 60
+        seconds = int(seconds)
+        minutes = (millis / (1000 * 60)) % 60
+        minutes = int(minutes)
+        hours = (millis / (1000 * 60 * 60)) % 24
+
+        return "%d:%d:%d" % (hours, minutes, seconds)
+
     def saveFileFromRequestOnDisk(self, file):
         file_location = f"./request-files/{file.filename}"
         with open(file_location, "wb+") as file_object:
@@ -68,8 +78,9 @@ class Mixer:
         print("instrumental")
         print(instrumental_path)
         #  Zaczyna się od podkładu, fade-in 2 sekundy.
-        fade_in_instrumental = self.addFadeInToAudioFile(instrumental_path, 2000)
 
+        fade_in_instrumental = self.addFadeInToAudioFile(instrumental_path, 2000)
+        fade_in_instrumental.export(instrumental_path, format="wav")
 
         '''
         Zaczyna się od podkładu, fade-in 2 sekundy.
@@ -80,22 +91,33 @@ class Mixer:
         # instrumental = AudioSegment.from_mp3(instrumental_path)
         mix_position = 5000
         counter = 1
+        final_mix_version = ''
+
         for file in file_names_list:
             file_to_mix = AudioSegment.from_wav(file)
             print(file)
             partial_mix_path_to_export = 'output-mixes/mix_' + str(counter) + '.wav'
             previous_mix_partial = 'output-mixes/mix_' + str(counter - 1) + '.wav'
             if counter == 1:
-                current_instrumental = AudioSegment.from_mp3(instrumental_path)
+                current_instrumental = AudioSegment.from_wav(instrumental_path)
             else:
                 current_instrumental = AudioSegment.from_wav(previous_mix_partial)
             print(partial_mix_path_to_export )
             mix = current_instrumental.overlay(file_to_mix, position=mix_position)
-            print("Mix position: " + str(mix_position))
+
+            duration_millis = round(file_to_mix.duration_seconds  * 1000)
+            print(str(duration_millis))
+
+            #print("Mix position: " + str(mix_position))
+            print("Mix position: " + str(self.convertMilisecondsToMinuteSecondFormat(mix_position)))
+
             print("Counter: " + str(counter))
             file_path = "./output-mixes/mix_" + str(counter) + ".wav"
             mix.export(partial_mix_path_to_export, format="wav")
-            mix_position += 10000
+            final_mix_version = partial_mix_path_to_export
+
+            current_position = duration_millis + 10000
+            mix_position += current_position
             counter += 1
 
         # file_to_mix = AudioSegment.from_wav(file_names_list[1])
@@ -112,7 +134,7 @@ class Mixer:
 
 
 
-
+        # E:\FlStudioVSTLargeSize\Sample\kshmr.vol.4\Vocals\Vocal Tools\Vocal Bends
         # print(file_location)
         # # Zaczyna się od podkładu, fade-in 2 sekundy.
         # instrumental_fade_in = contents.fade_in(2000)
@@ -125,3 +147,10 @@ class Mixer:
         # mix.export(file_path, format="mp3")
 
        # return file_path
+
+        fade_out_path = './output-mixes/last.wav'
+        fade_out = self.addFadeOutToAudioFile(final_mix_version, 10000)
+        fade_out.export(fade_out_path, format="wav")
+
+        return fade_out_path
+      #  return final_mix_version

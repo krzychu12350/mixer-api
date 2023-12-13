@@ -48,7 +48,8 @@ async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
     mixer = Mixer()
     filePath = mixer.mixFileSounds(files, instrumental)
 
-    return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
+    return FileResponse(filePath, media_type='audio/wav')
+    #return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
 
 @app.get("/mix")
 async def mix_files():
