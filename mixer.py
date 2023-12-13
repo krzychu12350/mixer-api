@@ -1,5 +1,7 @@
+import shutil
+
 from pydub import AudioSegment
-from pydub.playback import play
+
 '''
 1. Loudness
 from pydub import AudioSegment
@@ -13,6 +15,8 @@ louder_via_operator = sound1 + 3.5
 quieter_via_method = sound1.apply_gain(-5.7)
 quieter_via_operator = sound1 - 5.7
 '''
+
+
 class Mixer:
     def mergeFiles(self):
         clap = AudioSegment.from_wav("sounds/clap.wav")
@@ -26,7 +30,7 @@ class Mixer:
         #
         # three_concat = with_style.append(impact, crossfade=2000)
 
-        #play(clap + fill + impact)
+        # play(clap + fill + impact)
         awesome = clap + fill + impact
         file_path = "./mashup.mp3"
         awesome.export(file_path, format="mp3", bitrate="192k")
@@ -34,18 +38,90 @@ class Mixer:
         return file_path
         # play(three_concat)
 
+    def saveFileFromRequestOnDisk(self, file):
+        file_location = f"./request-files/{file.filename}"
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(file.file, file_object)
+
+    def addFadeInToAudioFile(self, filePath, duration):
+        file = AudioSegment.from_mp3(filePath)
+        return file.fade_in(duration)
+
+    def addFadeOutToAudioFile(self, filePath, duration):
+        file = AudioSegment.from_wav(filePath)
+        return file.fade_out(duration)
+
     def mixFileSounds(self, files, instrumental):
-        clap = AudioSegment.from_wav("./sounds/clap.wav")
-        # # play(song)
+        global file_path, mix
+        self.saveFileFromRequestOnDisk(instrumental)
+
+        for f in files:
+            self.saveFileFromRequestOnDisk(f)
+
+        file_names_list = []
+        for file in files:
+            file_names_list.append('request-files/' + file.filename)
+
+        instrumental_path = 'request-files/' + instrumental.filename
+        print("files")
+        print(file_names_list)
+        print("instrumental")
+        print(instrumental_path)
+        #  Zaczyna się od podkładu, fade-in 2 sekundy.
+        fade_in_instrumental = self.addFadeInToAudioFile(instrumental_path, 2000)
+
+
+        '''
+        Zaczyna się od podkładu, fade-in 2 sekundy.
+        Po 5 sekundach 1 plik mp3 (podkład jest cały czas)
+        każdy następny plik mp3 odtwarza się po 10 sekundach od zakończenia poprzedniego.
+        po ostatnim pliku 10s i 3s fade-out.
+        '''
+        # instrumental = AudioSegment.from_mp3(instrumental_path)
+        mix_position = 5000
+        counter = 1
+        for file in file_names_list:
+            file_to_mix = AudioSegment.from_wav(file)
+            print(file)
+            partial_mix_path_to_export = 'output-mixes/mix_' + str(counter) + '.wav'
+            previous_mix_partial = 'output-mixes/mix_' + str(counter - 1) + '.wav'
+            if counter == 1:
+                current_instrumental = AudioSegment.from_mp3(instrumental_path)
+            else:
+                current_instrumental = AudioSegment.from_wav(previous_mix_partial)
+            print(partial_mix_path_to_export )
+            mix = current_instrumental.overlay(file_to_mix, position=mix_position)
+            print("Mix position: " + str(mix_position))
+            print("Counter: " + str(counter))
+            file_path = "./output-mixes/mix_" + str(counter) + ".wav"
+            mix.export(partial_mix_path_to_export, format="wav")
+            mix_position += 10000
+            counter += 1
+
+        # file_to_mix = AudioSegment.from_wav(file_names_list[1])
+        # instrumental_2 = AudioSegment.from_mp3(file_path)
+        # mix = fade_in_instrumental.overlay(file_to_mix, position=mix_position)
+        # print("Mix position: " + str(mix_position))
+        # file_path = "./output-mixes/mix_" + str(counter) + ".wav"
+        # mix.export(file_path, format="wav")
+        # mix_position += 10000
+        # counter += 1
+
+
+
+
+
+
+
+        # print(file_location)
+        # # Zaczyna się od podkładu, fade-in 2 sekundy.
+        # instrumental_fade_in = contents.fade_in(2000)
         #
-        fill = AudioSegment.from_wav("./sounds/impact.wav")
+        # fill = AudioSegment.from_wav("./sounds/fill.wav")
+        #
+        # #Po 5 sekundach 1 plik mp3 (podkład jest cały czas)
+        #  mix =  instrumental_fade_in.overlay(fill, position=5000)
+        # file_path = "./output-mix.mp3"
+        # mix.export(file_path, format="mp3")
 
-        overlay = clap.overlay(clap, position=100)
-        file_path = "./output.mp3"
-        file_handle = overlay.export(file_path, format="mp3")
-
-        return file_path
-
-
-
-
+       # return file_path
