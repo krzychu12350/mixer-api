@@ -1,4 +1,6 @@
-from fastapi import APIRouter, UploadFile
+from typing import Annotated
+
+from fastapi import APIRouter, UploadFile, Form
 
 from app import __version__
 
@@ -15,3 +17,7 @@ async def mix_files(instrumental):
     #
     # return FileResponse(filePath, media_type='audio/wav')
     return {"instrumental": instrumental.filename}
+
+@router.post("/login/")
+async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    return {"username": username}
