@@ -1,8 +1,11 @@
 from time import time
-import uvicorn
-from fastapi import FastAPI, __version__
-from fastapi.middleware.cors import CORSMiddleware
 
+import uvicorn
+from fastapi import FastAPI, __version__, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import FileResponse
+
+from mixer import Mixer
 
 origins = ["*"]
 app = FastAPI()
@@ -42,13 +45,13 @@ app.add_middleware(
 #     return FileResponse(filePath, media_type='audio/mp3')
 
 
-# @app.post("/multi")
-# async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
-#     mixer = Mixer()
-#     filePath = mixer.mixFileSounds(files, instrumental)
-#
-#     return FileResponse(filePath, media_type='audio/wav')
-#     # return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
+@app.post("/multi")
+async def check_multi_files(files: list[UploadFile], instrumental: UploadFile):
+    mixer = Mixer()
+    filePath = mixer.mixFileSounds(files, instrumental)
+
+    return FileResponse(filePath, media_type='audio/wav')
+    # return {"filenames": [file.filename for file in files], "instrumental": instrumental.filename}
 
 
 # @app.get("/mix")
