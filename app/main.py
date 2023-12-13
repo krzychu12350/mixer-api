@@ -12,4 +12,6 @@ def status():
 
 @app.post("/hello")
 async def hello_message(dto: ISayHelloDto):
-    return {"message": f"Hello {dto.message}"}
+    return {
+        "Filenames": [file.filename for file in dto.files],
+    }
