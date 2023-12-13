@@ -18,6 +18,12 @@ async def mix_files(instrumental):
     # return FileResponse(filePath, media_type='audio/wav')
     return {"instrumental": instrumental.filename}
 
-@router.post("/login/")
-async def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    return {"username": username}
+class Color(BaseModel):
+    r: float
+    g: float
+    b: float
+
+@app.post("/")
+def api_test(color: Color = Form(...)):
+    print(color)
+    print(type(color))
