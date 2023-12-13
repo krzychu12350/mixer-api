@@ -185,7 +185,7 @@ app.add_middleware(
 #     return FileResponse(filePath, media_type='audio/mp3')
 
 
-@app.get("/multi")
+@app.post("/multi")
 async def check_multi_files(files, instrumental):
     # filePath = mixFileSounds(files, instrumental)
     #
