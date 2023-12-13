@@ -1,4 +1,5 @@
+from fastapi import UploadFile, File
 from pydantic import BaseModel
 
 class ISayHelloDto(BaseModel):
-    message: str
+    file: UploadFile = File(...),
