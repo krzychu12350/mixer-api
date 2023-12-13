@@ -10,7 +10,7 @@ def status():
     return {"ok": True, "version": __version__}
 
 @router.post("/multi")
-async def mix_files(instrumental: UploadFile):
+async def mix_files(instrumental):
     # filePath = mixFileSounds(files, instrumental)
     #
     # return FileResponse(filePath, media_type='audio/wav')
